@@ -1,0 +1,264 @@
+<!doctype html>
+<!--[if lt IE 7 ]><html lang="en" class="no-js ie6"><![endif]-->
+<!--[if IE 7 ]><html lang="en" class="no-js ie7"><![endif]-->
+<!--[if IE 8 ]><html lang="en" class="no-js ie8"><![endif]-->
+<!--[if IE 9 ]><html lang="en" class="no-js ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>CJBoCo - CJ Image Video Previewer</title>
+<link rel="shortcut icon" href="assets/images/favicon.png">
+<link href="assets/css/demo.css" rel="stylesheet" type="text/css" media="all">
+<style type="text/css">
+	.Videos {
+		display: block;
+		height: auto;
+		width: 100%;
+	}
+	.Videos div.thumbnail {
+		border: 1px solid #999;
+		display: block;
+		float: left;
+		height: 110px;
+		margin: 0px 10px 10px 0px;
+		overflow: hidden;
+		position: relative;
+		width: 160px;
+	}
+	.Videos div.thumbnailBig {
+		border: 1px solid #999;
+		display: block;
+		float: left;
+		height: 240px;
+		margin: 0px 10px 10px 0px;
+		overflow: hidden;
+		position: relative;
+		width: 320px;
+	}
+</style>
+</head>
+<body>
+<div id="wrapper">
+	<header>
+		<div class="padder">
+			 <h1><a href="http://www.cjboco.com/projects.cfm/project/cj-image-video-previewer/2.0.0/" rel="bookmark" title="Permanent Link to CJ Image Video Previewer 2.0">CJ Image Video Previewer 2.0 Demo</a></h1>
+			<h3>A JQuery Plug-In to Display A Series of Image Frames, Like A Video Previewer</h3>
+		</div>
+	</header>
+	<section>
+
+          <div class="demo-content">
+            <p>Implementing the plug-in is pretty straight foward, you just need to have a container that contains a single image. The plug-in is passed an array of images to use for the animated preview.</p>
+
+            <p>You also have the option to pass the <strong>delay</strong> amount between frames. There's a built in method to ensure that images are loaded prior to continuing. In theory it should scale up nicely. And because of this, I have built in a <strong>Progress Indicator</strong>. You have the option to turn this on or off.</p><br>
+
+            <div class="clearfix">
+              <h3>Example #1</h3>
+
+              <div class="Videos clearfix">
+                <div id="preview_01" class="thumbnail">
+                  <img src="assets/images/bb_minnie_the_moocher_000030.jpg" alt="Betty Boop" width="160" height="110">
+                </div>
+              </div>
+
+              <h4>HTML</h4>
+
+<code><pre>&lt;div id="Videos" class="clearfix"&gt;
+   &lt;div id="preview_01" class="thumbnail"&gt;
+        &lt;img src="images/bb_minnie_the_moocher_000030.jpg" alt="Betty Boop" width="160" height="110" /&gt;
+   &lt;/div&gt;
+&lt;/div&gt;</pre></code>
+
+
+              <h4>Code</h4>
+
+<code><pre>$('#preview_01').cjImageVideoPreviewer({
+ // provide an array of your thumbnail images
+ images: [
+   'images/bb_minnie_the_moocher_000060.jpg',
+   'images/bb_minnie_the_moocher_000090.jpg',
+   'images/bb_minnie_the_moocher_000120.jpg',
+   'images/bb_minnie_the_moocher_000150.jpg',
+   'images/bb_minnie_the_moocher_000180.jpg',
+   'images/bb_minnie_the_moocher_000210.jpg',
+   'images/bb_minnie_the_moocher_000240.jpg',
+   'images/bb_minnie_the_moocher_000270.jpg',
+   'images/bb_minnie_the_moocher_000300.jpg',
+   'images/bb_minnie_the_moocher_000330.jpg',
+   'images/bb_minnie_the_moocher_000360.jpg',
+   'images/bb_minnie_the_moocher_000390.jpg',
+   'images/bb_minnie_the_moocher_000420.jpg',
+   'images/bb_minnie_the_moocher_000450.jpg'
+ ]
+});
+</pre></code>
+<br>
+
+              <h3>Example #2</h3>
+
+              <div class="Videos clearfix">
+                <div id="preview_02" class="thumbnail">
+                  <img src="assets/images/superman_the_mechanical_monsters_000030.jpg" alt="Superman" width="160" height="110">
+                </div>
+              </div>
+
+              <h4>HTML</h4>
+              <pre>
+<code>&lt;div id="Videos" class="clearfix"&gt;
+   &lt;div id="preview_02" class="thumbnail"&gt;
+        &lt;img src="images/superman_the_mechanical_monsters_000030.jpg" alt="Superman" width="160" height="110" /&gt;
+   &lt;/div&gt;
+&lt;/div&gt;</code>
+</pre>
+
+              <h4>Code</h4>
+<code><pre>$('#preview_02').cjImageVideoPreviewer({
+ // provide an array of your thumbnail images
+ images: [
+   'images/superman_the_mechanical_monsters_000120.jpg',
+   'images/superman_the_mechanical_monsters_000150.jpg',
+   'images/superman_the_mechanical_monsters_000210.jpg',
+   'images/superman_the_mechanical_monsters_000240.jpg',
+   'images/superman_the_mechanical_monsters_000270.jpg',
+   'images/superman_the_mechanical_monsters_000300.jpg',
+   'images/superman_the_mechanical_monsters_000330.jpg'
+ ],
+ delay: 100,         // obviously this is a crazy fast amount
+ showProgress: false   // turn off the progress bar
+});
+</pre></code>
+<br>
+
+              <h3>Example #3</h3>
+
+              <div class="Videos clearfix">
+                <div id="preview_03" class="thumbnailBig">
+                  <a href="javascript:alert('What\'s Up Doc?');"><img src="assets/images/bugs_bunny_00027.jpg" alt="Bugs Bunny" width="320" height="240"></a>
+                </div>
+              </div>
+
+              <h4>HTML</h4>
+
+<code><pre>&lt;div id="Videos" class="clearfix"&gt;
+   &lt;div id="preview_03" class="thumbnailBig"&gt;
+        &lt;a href="javascript:alert('What\'s up doc?');"&gt;&lt;img src="images/bugs_bunny_00027.jpg" alt="Bugs Bunny" width="320" height="240" /&gt;&lt;/a&gt;
+   &lt;/div&gt;
+&lt;/div&gt;</pre></code>
+
+
+              <h4>Code</h4>
+
+<code><pre>$('#preview_03').cjImageVideoPreviewer({
+ // provide an array of your thumbnail images
+ images: [
+   'images/bugs_bunny_00188.jpg',
+   'images/bugs_bunny_00189.jpg',
+   'images/bugs_bunny_00190.jpg',
+   'images/bugs_bunny_00191.jpg',
+   'images/bugs_bunny_00192.jpg',
+   'images/bugs_bunny_00193.jpg',
+   'images/bugs_bunny_00194.jpg',
+   'images/bugs_bunny_00195.jpg',
+   'images/bugs_bunny_00196.jpg',
+   'images/bugs_bunny_00197.jpg',
+   'images/bugs_bunny_00198.jpg',
+   'images/bugs_bunny_00199.jpg',
+   'images/bugs_bunny_00200.jpg',
+   'images/bugs_bunny_00201.jpg',
+   'images/bugs_bunny_00202.jpg',
+   'images/bugs_bunny_00203.jpg',
+   'images/bugs_bunny_00204.jpg',
+   'images/bugs_bunny_00205.jpg',
+   'images/bugs_bunny_00206.jpg',
+   'images/bugs_bunny_00207.jpg',
+   'images/bugs_bunny_00208.jpg',
+   'images/bugs_bunny_00209.jpg',
+   'images/bugs_bunny_00210.jpg'
+ ],
+ delay: 150
+});
+</pre></code>
+
+            </div>
+
+		<br />
+	</section>
+	<footer>
+		<div class="padder"> &copy;2012 <a href="http://www.cjboco.com/">Creative Juices Bo. Co.</a> All rights reserved.<br />
+			Licensed under the MIT.<br />
+		</div>
+	</footer>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="assets/js/jquery.cj_image_video_previewer.js"></script>
+<script>
+(function($) {
+	'use strict';
+
+	$('#preview_01').cjImageVideoPreviewer({
+		images: [
+			'assets/images/bb_minnie_the_moocher_000060.jpg',
+			'assets/images/bb_minnie_the_moocher_000090.jpg',
+			'assets/images/bb_minnie_the_moocher_000120.jpg',
+			'assets/images/bb_minnie_the_moocher_000150.jpg',
+			'assets/images/bb_minnie_the_moocher_000180.jpg',
+			'assets/images/bb_minnie_the_moocher_000210.jpg',
+			'assets/images/bb_minnie_the_moocher_000240.jpg',
+			'assets/images/bb_minnie_the_moocher_000270.jpg',
+			'assets/images/bb_minnie_the_moocher_000300.jpg',
+			'assets/images/bb_minnie_the_moocher_000330.jpg',
+			'assets/images/bb_minnie_the_moocher_000360.jpg',
+			'assets/images/bb_minnie_the_moocher_000390.jpg',
+			'assets/images/bb_minnie_the_moocher_000420.jpg',
+			'assets/images/bb_minnie_the_moocher_000450.jpg'
+		]
+	});
+	$('#preview_02').cjImageVideoPreviewer({
+		images: [
+			'assets/images/superman_the_mechanical_monsters_000120.jpg',
+			'assets/images/superman_the_mechanical_monsters_000150.jpg',
+			'assets/images/superman_the_mechanical_monsters_000210.jpg',
+			'assets/images/superman_the_mechanical_monsters_000240.jpg',
+			'assets/images/superman_the_mechanical_monsters_000270.jpg',
+			'assets/images/superman_the_mechanical_monsters_000300.jpg',
+			'assets/images/superman_the_mechanical_monsters_000330.jpg'
+		],
+		delay: 100,
+		showProgress: false
+	});
+	$('#preview_03').cjImageVideoPreviewer({
+		images: [
+			'assets/images/bugs_bunny_00188.jpg',
+			'assets/images/bugs_bunny_00189.jpg',
+			'assets/images/bugs_bunny_00190.jpg',
+			'assets/images/bugs_bunny_00191.jpg',
+			'assets/images/bugs_bunny_00192.jpg',
+			'assets/images/bugs_bunny_00193.jpg',
+			'assets/images/bugs_bunny_00194.jpg',
+			'assets/images/bugs_bunny_00195.jpg',
+			'assets/images/bugs_bunny_00196.jpg',
+			'assets/images/bugs_bunny_00197.jpg',
+			'assets/images/bugs_bunny_00198.jpg',
+			'assets/images/bugs_bunny_00199.jpg',
+			'assets/images/bugs_bunny_00200.jpg',
+			'assets/images/bugs_bunny_00201.jpg',
+			'assets/images/bugs_bunny_00202.jpg',
+			'assets/images/bugs_bunny_00203.jpg',
+			'assets/images/bugs_bunny_00204.jpg',
+			'assets/images/bugs_bunny_00205.jpg',
+			'assets/images/bugs_bunny_00206.jpg',
+			'assets/images/bugs_bunny_00207.jpg',
+			'assets/images/bugs_bunny_00208.jpg',
+			'assets/images/bugs_bunny_00209.jpg',
+			'assets/images/bugs_bunny_00210.jpg'
+		],
+		delay: 150
+	});
+
+}(jQuery));
+</script>
+</body>
+</html>
