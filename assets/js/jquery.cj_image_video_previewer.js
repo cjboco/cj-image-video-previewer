@@ -1,4 +1,4 @@
-/*globals window, document, jQuery */
+/*globals window, document, alert, jQuery */
 
 /*
  jQuery('img.photo',this).imagesLoaded(myFunction)
@@ -104,7 +104,6 @@
 }(jQuery));
 
 
-/*globals window,document,jQuery,alert */
 /* ***********************************************************************************
 
 	CJ Image Video Previewer JavaScript framework
@@ -146,7 +145,7 @@
 	1.1.1	(08-09-2012) - Fixed an IE9 bug. Updated jQuery.imagesLoaded.
 	1.1.0	(07-04-2010) - Fixed an IE8 bug. Added autoPlay.
 	1.0.2	(03-18-2010) - Fixed a bug with the mouse tracking. This
-						   prevented the script from firing properly on mouseovers.
+						   prevented the script from firing properly on mouseenters.
 	1.0.1	(12-28-2009) - Tweaked the POSITIONING check. Now forcing RELATIVE
 						   if it has not been set.
 	1.0		(10-23-2009) - Initial release.
@@ -190,25 +189,27 @@
 				sys.state = false;
 
 				// show the first image
-				$obj.find('div.cjImageVideoPreviewer img:first').css({
+				$obj.find('.cjImageVideoPreviewer img:first').css({
 					display: 'block'
 				});
 
 				// hide all the other images
-				$obj.find('div.cjImageVideoPreviewer img:not(:first)').css({
+				$obj.find('.cjImageVideoPreviewer img:not(:first)').css({
 					display: 'none'
 				});
 			}
 		}
 
 		// this function handles the image transitions.
-		function _thumbnail() {
+		function _animate() {
 
 			var sys = $obj.data('system'),
+				next = (sys.idx + 1 > o.images.length - 1 ? 1 : sys.idx + 1),
 				curImg = $obj.attr('id') + '_IMG_' + sys.idx,
-				nextImg = $obj.attr('id') + '_IMG_' + (sys.idx + 1 > o.images.length - 1 ? 1 : sys.idx + 1);
+				nextImg = $obj.attr('id') + '_IMG_' + next;
 
-			sys.idx = sys.idx + 1 > o.images.length - 1 ? 1 : sys.idx + 1;
+			// increase our index
+			sys.idx = next;
 
 			$obj.find('.cjImageVideoPreviewer img#' + nextImg).css({
 				display: 'block'
@@ -218,152 +219,12 @@
 			});
 			_clear();
 
-			if (o.autoPlay) {
-
-				sys.timer = window.setTimeout(_thumbnail, o.delay);
-
+			// let's make sure that the mouse is still over our element before we set another timer
+			if (sys.mouseX >= $obj.offset().left && sys.mouseX <= $obj.offset().left + $obj.width() && sys.mouseY >= $obj.offset().top && sys.mouseY <= $obj.offset().top + $obj.height()) {
+				sys.timer = window.setTimeout(_animate, o.delay);
 			} else {
-
-				// let's make sure that the mouse is still over our element before we set another timer
-				if (sys.mouseX >= $obj.offset().left && sys.mouseX <= $obj.offset().left + $obj.width() && sys.mouseY >= $obj.offset().top && sys.mouseY <= $obj.offset().top + $obj.height()) {
-					sys.timer = window.setTimeout(_thumbnail, o.delay);
-				} else {
-					_stop();
-				}
+				_stop();
 			}
-		}
-
-		// make sure all out images have loaded before starting the transition animation
-		function _check() {
-
-			var sys = $obj.data('system'),
-				$pbox, $pbar;
-
-			// check load count against our image array
-			// (keep in mind we added an image to it, so length - 1 - 1)
-
-
-			if (sys.loaded > o.images.length - 2) {
-
-				$obj.find('div.cjImageVideoPreviewerProgress').hide();
-				sys.timer = window.setTimeout(_thumbnail, o.delay);
-
-			} else {
-
-				// animate the progress bar (if set)
-				if (o.showProgress) {
-					$pbox = $obj.find('.cjImageVideoPreviewerProgress');
-					$pbar = $obj.find('.cjImageVideoPreviewerProgressBar');
-					if ($pbox.css('display') !== 'block') {
-						$pbox.show();
-					}
-					$pbar.css({
-						left: parseInt($pbar.css('left'), 10) + parseInt($pbar.width() / (o.images.length - 2), 10)
-					});
-				}
-			}
-		}
-
-		// setup a que container and load all the images
-		function _setup() {
-
-			var sys = $obj.data('system'),
-				$link = $obj.find('a'),
-				link;
-
-			// add our original image to the top of the array
-			o.images.unshift($obj.find('img:first').attr('src'));
-
-			// is the original image's parent a LINK?
-			if ($link.length > 0) {
-				link = $link[0].href;
-				$obj.append(
-					$('<div>').css({
-						display: 'block',
-						width: $obj.width(),
-						height: $obj.height(),
-						position: 'absolute',
-						top: 0,
-						left: 0,
-						margin: 0,
-						padding: 0,
-						border: 0,
-						cursor: 'pointer',
-						zIndex: 30
-					}).on('click', function() {
-						document.location.href = link;
-					})
-				);
-				$obj.find('a img').appendTo($obj);
-				$obj.find('a').remove();
-			}
-
-			// need to create an container loader for the images.
-			// this will help with faster transitions
-			$obj.append('<div class="cjImageVideoPreviewer">');
-			$obj.find('.cjImageVideoPreviewer').css({
-				display: 'none',
-				width: $obj.width(),
-				height: $obj.height(),
-				overflow: 'hidden',
-				position: 'absolute',
-				top: 0,
-				left: 0
-			});
-
-			// add a progress indicator to the main element (if set)
-			if (o.showProgress) {
-				$obj.append(
-				$('<div class="cjImageVideoPreviewerProgress">').css({
-					display: 'none',
-					width: ($obj.width() - 4),
-					height: 8,
-					overflow: 'hidden',
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					backgroundColor: $obj.css('border-top-color') || '#000',
-					borderWidth: '2px',
-					borderStyle: 'solid',
-					borderColor: $obj.css('border-top-color') || '#000',
-					zIndex: 20
-				}).append(
-				$('<div class="cjImageVideoPreviewerProgressBar">').css({
-					display: 'block',
-					width: ($obj.width() - 4),
-					height: 6,
-					overflow: 'hidden',
-					position: 'absolute',
-					top: 0,
-					left: '-' + ($obj.width() - 4),
-					// the background is using a base64 encoded image, IE doesn't show this, so it will use the background color instead
-					background: '#6bc4f7 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAGCAIAAABSPBl5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAANRJREFUeNpckUtyxDAIRGms8WIq+9lMTpzL5RC5QhYZ23QakCcfFaIQEo+P8Pb+5TDJAgzY8FOAi7ffANMi7aAFbQvbyV26Jf2MuhofnzFZTuGEWBesLoNrcvEPtwcfkUTpx8FCJ7SJQwe3WsywxTJJ5EkaLAPz/ulknM8O6+pSJ+52hXCLz2Yv3pKdjrId6HyFqHICWxYoG9vZ7BHQg3G/es/uz/iQCTS+9j+bDSKyEAVL49fgMGf3+pKPtVVCBeew+gcmy35w7B6J/pPSxTpvvwUYAKIhoZSkg7l0AAAAAElFTkSuQmCC) repeat-x top left',
-					zIndex: 21
-				})));
-			}
-
-			// add all the images to main element.
-			$(o.images).each(function (i) {
-				var id = $obj.attr('id') + '_IMG_' + i;
-				$obj.find('.cjImageVideoPreviewer:first').append(
-				$('<img src="' + o.images[i] + '" id="' + id + '" />').css({
-					display: 'none',
-					position: 'absolute',
-					top: 0,
-					left: 0,
-					zIndex: 10
-				}));
-				$('#' + id).imagesLoaded(function () {
-					sys.loaded++;
-					_check();
-				});
-			});
-
-			// reveal our creation
-			$obj.find('.cjImageVideoPreviewer').css({
-				display: 'block'
-			});
-
 		}
 
 		function _start() {
@@ -375,66 +236,160 @@
 			sys.state = true;
 			_clear();
 
-			// make sure the que container is available. If not, create it.
-			if ($obj.find('.cjImageVideoPreviewer:first').length === 0) {
-
-				// set up our que container
-				_setup();
-				sys.timer = window.setTimeout(_start, 100);
-
-			} else {
-
-				// que has already been created, start out transition animation
-				sys.timer = window.setTimeout(_thumbnail, o.delay);
-			}
+			// que has already been created, start out transition animation
+			sys.timer = window.setTimeout(_animate, o.delay);
 		}
 
 		function _init() {
 
-			var sys = $obj.data('system');
+			var sys = $obj.data('system'),
+				$link = $obj.find('a'),
+				$temp = $('<div></div>').css({
+					position: 'absolute',
+					top: -21999,
+					left: -21999
+				});
+
+			// basic style check
+			if (!$obj.css('position') || ($obj.css('position') !== 'relative' && $obj.css('position') !== 'absolute')) {
+				alert('CJ Image Video Preview v' + (sys.version) + ' Error!\n\nYou parent element (#' + $obj.attr('id') + ') must have it\'s positioning set to either RELATIVE or ABSOLUTE.\n\nPosition: ' + ($obj.css('position')));
+				return;
+			}
 
 			// check to make sure we have items in our image array and
 			// at least one image in the element
 			if (o.images.length > 1 && $obj.find('img').length > 0) {
 
+				$('body').append($temp);
+
 				// make sure the delay is a positive integer
 				o.delay = (!o.delay || o.delay < 0) ? 0 : parseInt(o.delay, 10);
 
-				// make sure the first image is top most
-				if ($obj.css('position') !== 'relative' && $obj.css('position') !== 'absolute') {
-					alert('CJ Image Video Preview v' + (sys.version) + ' Error!\n\nYou parent element (#' + $obj.attr('id') + ') must have it\'s positioning set to either RELATIVE or ABSOLUTE.\n\nPosition: ' + ($obj.css('position')));
-					return;
-				}
+				// add our original image to the top of the array
+				o.images.unshift($obj.find('img:first').attr('src'));
 
-				if (o.autoPlay) {
-
-					// user choose to auto play (without user interaction)
-					_start();
-
-				} else {
-
-					// set up event tracking, this ensures the mouse is still in our element
-					$(document).mousemove(function (e) {
-						sys.mouseX = e.pageX;
-						sys.mouseY = e.pageY;
-					});
-
-					// user choose to only activate on mouseOvers
-					$obj.hover(
-
-					function () {
-						// make sure the image is loaded before continuing
-						if (sys.timer === null) {
-
-							_start();
-
-						}
-					}, function () {
-
+				// create our elements (everything should be visible and drawn offscreen)
+				$temp.append($('<div class="cjImageVideoPreviewer"></div>').css({
+					position: 'absolute',
+					display: 'block',
+					width: $obj.width(),
+					height: $obj.height(),
+					top: 0,
+					left: 0,
+					cursor: $link.length ? 'pointer' : 'default',
+					overflow: 'hidden'
+				}).bind('mouseenter', function () {
+					if (!o.autoPlay && !sys.timer) {
+						_start();
+					}
+				}).bind('mouseleave', function () {
+					if (!o.autoPlay) {
 						_stop();
+					}
+				}).bind('click', function () {
+					if ($link.length) {
+						document.location.href = $link[0].href;
+					}
+				}));
 
-					});
+				// run the a mouse timer after 1 second to catch
+				// users leaving page. Plus lets capture mouse coordinates
+				$(window).bind('blur mouseout mouseleave', function () {
+					if (sys.mtimer) {
+						window.clearTimeout(sys.mtimer);
+						sys.mtimer = null;
+					}
+					sys.mtimer = window.setTimeout(function () {
+						_stop();
+					}, 500);
+				}).bind('mouseenter', function () {
+					window.clearTimeout(sys.mtimer);
+					sys.mtimer = null;
+				}).bind('mousemove', function (e) {
+					sys.mouseX = e.pageX;
+					sys.mouseY = e.pageY;
+				});
+
+				// add a progress indicator to the main element (if set)
+				if (o.showProgress) {
+					$temp.append(
+					$('<div class="cjImageVideoPreviewerProgress">').css({
+						display: 'none',
+						width: ($obj.width() - 4),
+						height: 8,
+						overflow: 'hidden',
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						backgroundColor: $obj.css('border-top-color') || '#000',
+						borderWidth: '2px',
+						borderStyle: 'solid',
+						borderColor: $obj.css('border-top-color') || '#000',
+						zIndex: 20
+					}).append(
+					$('<div class="cjImageVideoPreviewerProgressBar">').css({
+						display: 'block',
+						width: ($obj.width() - 4),
+						height: 6,
+						overflow: 'hidden',
+						position: 'absolute',
+						top: 0,
+						left: '-' + ($obj.width() - 4),
+						// the background is using a base64 encoded image, IE doesn't show this, so it will use the background color instead
+						background: '#6bc4f7 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAGCAIAAABSPBl5AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAANRJREFUeNpckUtyxDAIRGms8WIq+9lMTpzL5RC5QhYZ23QakCcfFaIQEo+P8Pb+5TDJAgzY8FOAi7ffANMi7aAFbQvbyV26Jf2MuhofnzFZTuGEWBesLoNrcvEPtwcfkUTpx8FCJ7SJQwe3WsywxTJJ5EkaLAPz/ulknM8O6+pSJ+52hXCLz2Yv3pKdjrId6HyFqHICWxYoG9vZ7BHQg3G/es/uz/iQCTS+9j+bDSKyEAVL49fgMGf3+pKPtVVCBeew+gcmy35w7B6J/pPSxTpvvwUYAKIhoZSkg7l0AAAAAElFTkSuQmCC) repeat-x top left',
+						zIndex: 21
+					})));
 				}
+
+				// add all the images to main element.
+				$.each(o.images, function (i) {
+					var id = $obj.attr('id') + '_IMG_' + i;
+					$temp.find('.cjImageVideoPreviewer').append(
+					$('<img src="' + o.images[i] + '" id="' + id + '" class="cjImageVideoPreviewerImage" />').css({
+						display: i < 1 ? 'block' : 'none',
+						position: 'absolute',
+						top: 0,
+						left: 0,
+						zIndex: 10
+					}).imagesLoaded(function () {
+
+						var sys = $obj.data('system'),
+							$pbox, $pbar;
+
+						if (sys.loaded > o.images.length - 2) {
+
+							// hide the progress bar
+							$obj.find('.cjImageVideoPreviewerProgress').hide();
+
+							// start playing if autoPlay is set true
+							if (o.autoPlay) {
+								sys.timer = window.setTimeout(_animate, o.delay);
+							}
+
+						} else {
+
+							// animate the progress bar (if set to show)
+							if (o.showProgress) {
+								$pbox = $obj.find('.cjImageVideoPreviewerProgress');
+								$pbar = $obj.find('.cjImageVideoPreviewerProgressBar');
+								if ($pbox.css('display') !== 'block') {
+									$pbox.show();
+								}
+								$pbar.css({
+									left: parseInt($pbar.css('left'), 10) + parseInt($pbar.width() / (o.images.length - 2), 10)
+								});
+							}
+						}
+
+						sys.loaded++;
+
+					}));
+				});
+
+				// clear our
+				$obj.html('').append($temp.find('.cjImageVideoPreviewer'), $temp.find('.cjImageVideoPreviewerProgress'), $temp.find('.cjImageVideoLink'));
+				$temp.remove();
+
 			}
 		}
 
@@ -453,8 +408,9 @@
 				// function parameters
 				version: '2.0.0',
 				elem: null,
-				idx: 1,
+				idx: 0,
 				timer: null,
+				mtimer: null,
 				loaded: 0,
 				mouseX: null,
 				mouseY: null,
